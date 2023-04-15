@@ -8,6 +8,7 @@ import com.aditya.insurance.management.system.repository.AddressRepository;
 import com.aditya.insurance.management.system.repository.CustomerRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +51,7 @@ public class CustomerService {
     @PostMapping("/v1/customers")
     public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer customer) {
 
+        //Check if customer exists
         if(customer.getAddress() == null) {
             throw new AddressNotFoundException("Address is not present for the customer");
         }
@@ -62,7 +64,7 @@ public class CustomerService {
         customer.setAddressId(savedAddress.getId());
         Customer savedCustomer = customerRepository.save(customer);
 
-        return ResponseEntity.ok(savedCustomer);
+        return ResponseEntity.status((HttpStatus.CREATED)).body(savedCustomer);
     }
 
     //Delete customer by ID
@@ -81,6 +83,8 @@ public class CustomerService {
         if(updateCustomer.isEmpty()) {
             throw new CustomerNotFoundException("Customer with id " + id + " not found");
         }
+
+        //Update retrieved customer with new details from request
         updateCustomer.get().setName(customer.getName());
         updateCustomer.get().setDateOfBirth(customer.getDateOfBirth());
         updateCustomer.get().setMobileNo(customer.getMobileNo());

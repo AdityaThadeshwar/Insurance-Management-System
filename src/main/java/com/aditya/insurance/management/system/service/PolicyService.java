@@ -8,6 +8,7 @@ import com.aditya.insurance.management.system.repository.CustomerRepository;
 import com.aditya.insurance.management.system.repository.PolicyRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,11 +58,12 @@ public class PolicyService {
             throw new CustomerNotFoundException("Policy with id " + id + " not found");
         }
 
+        //Update customer id from request in the policy and persist
         policy.setCustomerId(id);
         Policy savedPolicy = policyRepository.save(policy);
 
         savedPolicy.setCustomer(savedCustomer.get());
-        return ResponseEntity.ok(savedPolicy);
+        return ResponseEntity.status((HttpStatus.CREATED)).body(savedPolicy);
     }
 
     //Delete Policy by ID
@@ -81,7 +83,7 @@ public class PolicyService {
             throw new CustomerNotFoundException("Policy with id " + id + " not found");
         }
 
-        //Update policy attributes
+        //Update retrieved policy with new details from request
         updatePolicy.get().setPolicyNo(policy.getPolicyNo());
         updatePolicy.get().setCoverageAmount(policy.getCoverageAmount());
         updatePolicy.get().setPremium(policy.getPremium());

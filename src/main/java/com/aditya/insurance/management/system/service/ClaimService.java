@@ -7,6 +7,7 @@ import com.aditya.insurance.management.system.exceptions.CustomerNotFoundExcepti
 import com.aditya.insurance.management.system.repository.ClaimRepository;
 import com.aditya.insurance.management.system.repository.PolicyRepository;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,12 +55,12 @@ public class ClaimService {
             throw new CustomerNotFoundException("Policy with id " + id + " not found");
         }
 
+        //Update policy id from request in the claim and persist
         claim.setPolicyId(id);
-
         Claim savedClaim = claimRepository.save(claim);
 
         savedClaim.setPolicy(savedPolicy.get());
-        return ResponseEntity.ok(savedClaim);
+        return ResponseEntity.status((HttpStatus.CREATED)).body(savedClaim);
     }
 
     //Delete Claim by ID
@@ -79,7 +80,7 @@ public class ClaimService {
             throw new ClaimNotFoundException("Policy with id " + id + " not found");
         }
 
-        //Update claim attributes
+        //Update claim attributes from request
         updateClaim.get().setClaimNo(claim.getClaimNo());
         updateClaim.get().setClaimStatus(claim.getClaimStatus());
         updateClaim.get().setDateOfLoss(claim.getDateOfLoss());
