@@ -45,3 +45,20 @@ create table policy_details (
 
 insert into policy_details (id, policy_no, coverage_amount, premium, effective_date, expiry_date, customer_id)
 values (1, 'POL1', 100000, 500, '2023-01-20', '2023-01-20', 1000);
+
+//Queries for Claim
+create table claim_details (
+                               id int not null AUTO_INCREMENT,
+                               claim_no varchar(50),
+                               loss_description varchar(200),
+                               date_of_loss date,
+                               claim_status varchar(200),
+                               policy_id int not null,
+                               PRIMARY KEY (`id`)
+);
+
+insert into claim_details (id, claim_no, loss_description, date_of_loss, claim_status, policy_id)
+values (1, 'CLAIM1', 'desc', '2023-06-20', 'OPEN', '1');
+
+insert into claim_details (id, claim_no, loss_description, date_of_loss, claim_status, policy_id)
+values (2, 'CLAIM2', 'desc 2', '2023-09-20', 'CLOSE', '2');

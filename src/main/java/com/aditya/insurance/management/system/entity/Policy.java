@@ -1,5 +1,6 @@
 package com.aditya.insurance.management.system.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,4 +35,8 @@ public class Policy {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id", referencedColumnName = "id" )
     private Customer customer;
+
+    @OneToOne(mappedBy = "policy")
+    @JsonIgnore
+    private Claim claim;
 }

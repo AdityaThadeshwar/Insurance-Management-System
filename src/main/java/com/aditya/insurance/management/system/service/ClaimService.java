@@ -1,14 +1,14 @@
 package com.aditya.insurance.management.system.service;
 
 import com.aditya.insurance.management.system.entity.Address;
+import com.aditya.insurance.management.system.entity.Claim;
 import com.aditya.insurance.management.system.entity.Customer;
 import com.aditya.insurance.management.system.entity.Policy;
+import com.aditya.insurance.management.system.exceptions.ClaimNotFoundException;
 import com.aditya.insurance.management.system.exceptions.CustomerNotFoundException;
-import com.aditya.insurance.management.system.exceptions.PolicyNotFoundException;
-import com.aditya.insurance.management.system.repository.CustomerRepository;
+import com.aditya.insurance.management.system.repository.ClaimRepository;
 import com.aditya.insurance.management.system.repository.PolicyRepository;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,58 +16,56 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class PolicyService {
+public class ClaimService {
 
+    ClaimRepository claimRepository;
     PolicyRepository policyRepository;
-    CustomerRepository customerRepository;
 
-    @Autowired
-    public PolicyService(PolicyRepository policyRepository, CustomerRepository customerRepository) {
+    public ClaimService(ClaimRepository claimRepository, PolicyRepository policyRepository) {
+        this.claimRepository = claimRepository;
         this.policyRepository = policyRepository;
-        this.customerRepository = customerRepository;
     }
 
-    //Retrieve all policies
-    @GetMapping("/v1/policies")
-    public List<Policy> findAllPolicies() {
-        return policyRepository.findAll();
+    @GetMapping("/v1/claims")
+    public List<Claim> findAllCustomers() {
+        return claimRepository.findAll();
     }
 
-    //Retrieve policy by ID
-    @GetMapping("/v1/policies/{id}")
-    public Policy findPolicyByID(@PathVariable int id) {
+    //Retrieve Claim by ID
+    @GetMapping("/v1/claims/{id}")
+    public Claim findClaimByID(@PathVariable int id) {
 
         //Check if customer exists
-        Optional<Policy> policy = policyRepository.findById(id);
+        Optional<Claim> claim = claimRepository.findById(id);
 
-        if(policy.isEmpty()) {
-            throw new PolicyNotFoundException("Policy with id " + id + " not found");
+        if(claim.isEmpty()) {
+            throw new ClaimNotFoundException("Claim with id " + id + " not found");
         }
 
-        return policy.get();
+        return claim.get();
     }
 
-    //Add new Policy
-    @PostMapping("/v1/customers/{id}/policies")
-    public ResponseEntity<Policy> createPolicy(@PathVariable int id, @Valid @RequestBody Policy policy) {
+    //Add new Claim
+    @PostMapping("/v1/policies/{id}/claims")
+    public ResponseEntity<Claim> createClaim(@PathVariable int id, @Valid @RequestBody Claim claim) {
 
         //Check if customer exists
-        Optional<Customer> savedCustomer = customerRepository.findById(id);
+        Optional<Policy> savedPolicy = policyRepository.findById(id);
 
-        if(savedCustomer.isEmpty()) {
+        if(savedPolicy.isEmpty()) {
             throw new CustomerNotFoundException("Policy with id " + id + " not found");
         }
 
-        policy.setCustomer(savedCustomer.get());
-        Policy savedPolicy = policyRepository.save(policy);
+        claim.setPolicy(savedPolicy.get());
+        Claim savedClaim = claimRepository.save(claim);
 
-        return ResponseEntity.ok(savedPolicy);
+        return ResponseEntity.ok(savedClaim);
     }
 
-    //Delete Policy by ID
+    //Delete Claim by ID
     @DeleteMapping("/v1/policies/{id}")
     public void deletePolicyById(@PathVariable int id) {
-        policyRepository.deleteById(id);
+        claimRepository.deleteById(id);
     }
 
     //Update Policy by ID
