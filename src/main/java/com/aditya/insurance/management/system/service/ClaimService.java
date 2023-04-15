@@ -83,6 +83,7 @@ public class ClaimService {
         updateClaim.get().setClaimNo(claim.getClaimNo());
         updateClaim.get().setClaimStatus(claim.getClaimStatus());
         updateClaim.get().setDateOfLoss(claim.getDateOfLoss());
+        updateClaim.get().setLossDescription(claim.getLossDescription());
 
         claimRepository.save(updateClaim.get());
 

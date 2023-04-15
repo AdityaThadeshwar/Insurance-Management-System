@@ -1,10 +1,12 @@
 package com.aditya.insurance.management.system.service;
 
+import com.aditya.insurance.management.system.entity.Address;
 import com.aditya.insurance.management.system.entity.Customer;
+import com.aditya.insurance.management.system.exceptions.AddressNotFoundException;
 import com.aditya.insurance.management.system.exceptions.CustomerNotFoundException;
+import com.aditya.insurance.management.system.repository.AddressRepository;
 import com.aditya.insurance.management.system.repository.CustomerRepository;
 import jakarta.validation.Valid;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +18,12 @@ import java.util.Optional;
 public class CustomerService {
 
     CustomerRepository customerRepository;
+    AddressRepository addressRepository;
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository, AddressRepository addressRepository) {
         this.customerRepository = customerRepository;
+        this.addressRepository = addressRepository;
     }
 
     //Retrieve all customers
@@ -45,6 +49,17 @@ public class CustomerService {
     //Add new Customer
     @PostMapping("/v1/customers")
     public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer customer) {
+
+        if(customer.getAddress() == null) {
+            throw new AddressNotFoundException("Address is not present for the customer");
+        }
+
+        //Persist address from request
+        Address customerAddress = customer.getAddress();
+        Address savedAddress = addressRepository.save(customerAddress);
+
+        //Map id from saved address to customer and persist customer
+        customer.setAddressId(savedAddress.getId());
         Customer savedCustomer = customerRepository.save(customer);
 
         return ResponseEntity.ok(savedCustomer);

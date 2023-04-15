@@ -32,8 +32,11 @@ public class Customer {
     @Column(name = "mobile_no")
     private String mobileNo;
 
+    @Column(name = "address_id")
+    private Integer addressId;
+
     @OneToOne
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    @JoinColumn(name = "address_id", referencedColumnName = "id", insertable=false, updatable=false)
     private Address address;
 
     @OneToMany(mappedBy = "customer")
