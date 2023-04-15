@@ -30,3 +30,18 @@ create table address (
 
 insert into address (id, street, city, state, zip_code, customer_id)
 values (1, 'Street 1', 'LA', 'California', '90001', 1000);
+
+//Queries for Policy
+create table policy_details (
+                                id int not null AUTO_INCREMENT,
+                                policy_no varchar(50),
+                                coverage_amount int not null,
+                                premium int not null,
+                                effective_date date,
+                                expiry_date date,
+                                customer_id int not null,
+                                PRIMARY KEY (`id`)
+);
+
+insert into policy_details (id, policy_no, coverage_amount, premium, effective_date, expiry_date, customer_id)
+values (1, 'POL1', 100000, 500, '2023-01-20', '2023-01-20', 1000);

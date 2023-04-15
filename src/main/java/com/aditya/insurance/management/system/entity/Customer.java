@@ -1,5 +1,6 @@
 package com.aditya.insurance.management.system.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
@@ -33,6 +34,10 @@ public class Customer {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id" )
     private Address address;
+
+    @OneToOne(mappedBy = "customer")
+    @JsonIgnore
+    private Policy policy;
 
     public Customer(Integer id, String name, LocalDate dateOfBirth, String mobileNo) {
         this.id = id;
