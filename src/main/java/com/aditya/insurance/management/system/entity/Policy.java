@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.Set;
 
 @Entity(name = "policy_details")
 @Getter
@@ -32,11 +33,14 @@ public class Policy {
     @Column(name = "expiry_date")
     private Date expiryDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id" )
+    @Column(name = "customer_id")
+    private Integer customerId;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", referencedColumnName = "id", insertable=false, updatable=false)
     private Customer customer;
 
-    @OneToOne(mappedBy = "policy")
+    @OneToMany(mappedBy = "policy")
     @JsonIgnore
-    private Claim claim;
+    private Set<Claim> claim;
 }

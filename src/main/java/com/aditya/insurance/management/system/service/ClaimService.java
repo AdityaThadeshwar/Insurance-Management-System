@@ -1,8 +1,6 @@
 package com.aditya.insurance.management.system.service;
 
-import com.aditya.insurance.management.system.entity.Address;
 import com.aditya.insurance.management.system.entity.Claim;
-import com.aditya.insurance.management.system.entity.Customer;
 import com.aditya.insurance.management.system.entity.Policy;
 import com.aditya.insurance.management.system.exceptions.ClaimNotFoundException;
 import com.aditya.insurance.management.system.exceptions.CustomerNotFoundException;
@@ -56,43 +54,40 @@ public class ClaimService {
             throw new CustomerNotFoundException("Policy with id " + id + " not found");
         }
 
-        claim.setPolicy(savedPolicy.get());
+        claim.setPolicyId(id);
+
         Claim savedClaim = claimRepository.save(claim);
 
+        savedClaim.setPolicy(savedPolicy.get());
         return ResponseEntity.ok(savedClaim);
     }
 
     //Delete Claim by ID
-    @DeleteMapping("/v1/policies/{id}")
+    @DeleteMapping("/v1/claims/{id}")
     public void deletePolicyById(@PathVariable int id) {
         claimRepository.deleteById(id);
     }
 
-    //Update Policy by ID
-    @PutMapping("/v1/policies/{id}")
-    public ResponseEntity<Policy> updatePolicyByID(@PathVariable int id, @RequestBody Policy policy) {
+    //Update Claim by ID
+    @PutMapping("/v1/claims/{id}")
+    public ResponseEntity<Claim> updatePolicyByID(@PathVariable int id, @RequestBody Claim claim) {
 
         //Check if customer exists
-        Optional<Policy> updatePolicy = policyRepository.findById(id);
+        Optional<Claim> updateClaim = claimRepository.findById(id);
 
-        if(updatePolicy.isEmpty()) {
-            throw new CustomerNotFoundException("Policy with id " + id + " not found");
+        if(updateClaim.isEmpty()) {
+            throw new ClaimNotFoundException("Policy with id " + id + " not found");
         }
 
-        //Update policy attributes
-        updatePolicy.get().setPolicyNo(policy.getPolicyNo());
-        updatePolicy.get().setCoverageAmount(policy.getCoverageAmount());
-        updatePolicy.get().setPremium(policy.getPremium());
-        updatePolicy.get().setEffectiveDate(policy.getEffectiveDate());
-        updatePolicy.get().setExpiryDate(policy.getExpiryDate());
-        //updatePolicy.get().setCustomer(policy.getCustomer());
+        //Update claim attributes
+        updateClaim.get().setClaimNo(claim.getClaimNo());
+        updateClaim.get().setClaimStatus(claim.getClaimStatus());
+        updateClaim.get().setDateOfLoss(claim.getDateOfLoss());
 
-        Customer customer = updatePolicy.get().getCustomer();
-        Address address = customer.getAddress();
+        claimRepository.save(updateClaim.get());
 
-
-        policyRepository.save(updatePolicy.get());
-
-        return ResponseEntity.ok(updatePolicy.get());
+        return ResponseEntity.ok(updateClaim.get());
     }
+
+
 }

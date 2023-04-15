@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity(name = "customer_details")
 @Getter
@@ -31,22 +32,12 @@ public class Customer {
     @Column(name = "mobile_no")
     private String mobileNo;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id", referencedColumnName = "id" )
+    @OneToOne
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
-    @OneToOne(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer")
     @JsonIgnore
-    private Policy policy;
+    private Set<Policy> policy;
 
-    public Customer(Integer id, String name, LocalDate dateOfBirth, String mobileNo) {
-        this.id = id;
-        this.name = name;
-        this.dateOfBirth = dateOfBirth;
-        this.mobileNo = mobileNo;
-    }
-
-    public Customer() {
-
-    }
 }

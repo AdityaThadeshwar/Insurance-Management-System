@@ -28,7 +28,10 @@ public class Claim {
     @Column(name = "claim_status")
     private String claimStatus;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "policy_id", referencedColumnName = "id" )
+    @Column(name = "policy_id")
+    private Integer policyId;
+
+    @ManyToOne
+    @JoinColumn(name = "policy_id", referencedColumnName = "id", insertable=false, updatable=false)
     private Policy policy;
 }

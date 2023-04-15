@@ -1,6 +1,5 @@
 package com.aditya.insurance.management.system.service;
 
-import com.aditya.insurance.management.system.entity.Address;
 import com.aditya.insurance.management.system.entity.Customer;
 import com.aditya.insurance.management.system.entity.Policy;
 import com.aditya.insurance.management.system.exceptions.CustomerNotFoundException;
@@ -58,9 +57,10 @@ public class PolicyService {
             throw new CustomerNotFoundException("Policy with id " + id + " not found");
         }
 
-        policy.setCustomer(savedCustomer.get());
+        policy.setCustomerId(id);
         Policy savedPolicy = policyRepository.save(policy);
 
+        savedPolicy.setCustomer(savedCustomer.get());
         return ResponseEntity.ok(savedPolicy);
     }
 
@@ -87,11 +87,6 @@ public class PolicyService {
         updatePolicy.get().setPremium(policy.getPremium());
         updatePolicy.get().setEffectiveDate(policy.getEffectiveDate());
         updatePolicy.get().setExpiryDate(policy.getExpiryDate());
-        //updatePolicy.get().setCustomer(policy.getCustomer());
-
-        Customer customer = updatePolicy.get().getCustomer();
-        Address address = customer.getAddress();
-
 
         policyRepository.save(updatePolicy.get());
 
