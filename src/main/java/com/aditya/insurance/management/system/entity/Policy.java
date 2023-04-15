@@ -1,6 +1,5 @@
 package com.aditya.insurance.management.system.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +29,7 @@ public class Policy {
     private Date effectiveDate;
 
     @Column(name = "expiry_date")
-    private Date endDate;
+    private Date expiryDate;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id", referencedColumnName = "id" )
